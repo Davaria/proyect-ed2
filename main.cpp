@@ -1,30 +1,83 @@
-#include "bmp.h"
-using namespace std;
+/*
+ *****************************************************************************
+ *                                                                           *
+ *                          Platform Independent                             *
+ *                     Bitmap Image Reader Writer Library                    *
+ *                                                                           *
+ * Author: Arash Partow - 2002                                               *
+ * URL: http://partow.net/programming/bitmap/index.html                      *
+ *                                                                           *
+ * Note: This library only supports 24-bits per pixel bitmap format files.   *
+ *                                                                           *
+ * Copyright notice:                                                         *
+ * Free use of the Platform Independent Bitmap Image Reader Writer Library   *
+ * is permitted under the guidelines and in accordance with the most current *
+ * version of the MIT License.                                               *
+ * http://www.opensource.org/licenses/MIT                                    *
+ *                                                                           *
+ *****************************************************************************
+*/
 
-int main() {
-    // load the file. The constructor now does most of the work
-    char* c = "test.bmp";
-    char* c1 = "test2.bmp";
-    char* c2 = "test3.bmp";
-    BitMap example_bmp(c);
-    BitMap example_bmp1(c1); 
-    BitMap example_bmp2(c2);
-    /*for (int i = 0; i < 3; i++){
-        example_bmp.getPixel(i,0);
-    }*/
-    int opc;
-    cin>>opc;
-    // get the vector <R,G,B> for the pixel at (1,1)
-    //example_bmp.dispPixelData();
-    if(opc==1){
-        example_bmp.encrypt("ad",3);
-        example_bmp1.encrypt("ad",3);
-        example_bmp2.encrypt("ad",3);
-    }
-    else{
-        example_bmp.decrypt("ad",3);
-        example_bmp1.decrypt("ad",3);
-        example_bmp2.decrypt("ad",3);
-    }
-    //example_bmp.writePixel(10,10,255,0,0);
+
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+
+#include "bitmap_image.h"
+
+
+void test01()
+{
+   std::string file_name1("imagenes/img1.bmp"); //1
+   std::string file_name2("imagenes/img2.bmp");  //2
+   std::string file_name3("imagenes/img3.bmp");  //3
+   std::string file_name4("imagenes/img4.bmp");  //4
+   std::string file_name5("imagenes/img5.bmp");  //5
+   std::string file_name6("imagenes/img6.bmp");  //6
+
+   std::cout<<"Imagen"<<std::endl;
+   std::string n;
+   std::cin>>n;
+
+   std::string file_name = "imagenes/img" + n + ".bmp";
+   bitmap_image image(file_name);
+   if (!image)
+   {
+      printf("test01() - Error - Failed to open '%s'\n",file_name.c_str());
+      return;
+   }
+   int k;
+   std::cout<<"(1) Encriptacion por permutacion"<<std::endl;
+   std::cout<<"(2) Encriptacion por funciones caoticas"<<std::endl;
+   std::cin>>k;
+   switch (k){
+   case 1:
+      std::cout<<"Semilla para encriptar"<<std::endl;
+      std::cin>>k;
+      image.encriptar_permutacion(k);
+      std::cout<<"Semilla para desencriptar"<<std::endl;
+      std::cin>>k;
+      image.desencriptar_permutacion(k);
+      break;
+   case 2:   
+      std::cout<<"Clave para encriptar"<<std::endl;
+      std::cin>>n;
+      image.encriptar_caotico(n);
+      std::cout<<"Clave para desencriptar"<<std::endl;
+      std::cin>>n;
+      image.desencriptar_caotico(n);
+      break;
+   default:
+      std::cout<<"Error de opcion"<<std::endl;
+      break;
+   }
+}
+
+
+int main()
+{
+   test01();
+   return 0;
 }
